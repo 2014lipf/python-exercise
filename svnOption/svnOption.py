@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 p = subprocess.Popen("svn st --xml", stdout=subprocess.PIPE, shell=True)
 (output, err) = p.communicate()
 # print "output", output
- 
+excludes = ['/library/','/temp/','/local/','/build/']  
 fileTempName= "last_svn_st.xml"
 fileTemp = open(fileTempName,'w')
 fileTemp.write(output)
@@ -19,6 +19,10 @@ tree = ET.parse(fileTempName)
 root = tree.getroot()
 
 def svnOp(path,item):
+    for ex in excludes:
+        if(path.find(ex)>=0):
+            print 'ignore '+path
+            return
     if(item=='missing'):
         os.system("svn delete "+path)
     elif(item=='unversioned'):
