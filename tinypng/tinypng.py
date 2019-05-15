@@ -10,6 +10,7 @@ import shutil
 
 tinify.key = "API KEY"		# API KEY https://tinypng.com/developers
 version = "1.0.1"				# 版本
+SIZE_FILETER = 204800
 
 # 压缩的核心
 def compress_core(inputFile, outputFile, img_width):
@@ -32,12 +33,20 @@ def compress_path(path, width):
 		print "fromFilePath=%s" %fromFilePath
 		print "toFilePath=%s" %toFilePath
 
+		if os.path.isdir(toFilePath) == False:
+			os.mkdir(toFilePath)
+
 		for root, dirs, files in os.walk(fromFilePath):
 			print "root = %s" %root
 			print "dirs = %s" %dirs
 			print "files= %s" %files
 
 			for name in files:
+				file_path = os.path.join(root,name)
+				file_size = os.path.getsize(file_path)
+				# print file_size
+				print file_path
+
 				fileName, fileSuffix = os.path.splitext(name)
 				toFullPath = toFilePath + root[len(fromFilePath):]
 				toFullName = toFullPath + '/' + name
@@ -45,11 +54,17 @@ def compress_path(path, width):
 					pass
 				else:
 					os.mkdir(toFullPath)
-				if fileSuffix == '.png' or fileSuffix == '.jpg' or fileSuffix == '.jpeg':
+				if file_size>SIZE_FILETER and (fileSuffix == '.png' or fileSuffix == '.jpg' or fileSuffix == '.jpeg'):
+					print 'compress...',name
 					compress_core(root + '/' + name, toFullName, width)
+					print 'compress.. ok'
 				else:
+					print 'copy2...'
 					shutil.copy2(root + '/' + name, toFullName)
+
+
 			# break									# 仅遍历当前目录
+
 
 # 仅压缩指定文件
 def compress_file(inputFile, width):
