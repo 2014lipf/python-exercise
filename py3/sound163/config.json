@@ -1,0 +1,8 @@
+{
+	"id":"1407551413",
+	"page": 100,
+	"useCache": true,
+	"font_path": "SimHei.ttf",
+	"mask": "mask.png",
+	"chromedriver": "chromedriver"
+}
